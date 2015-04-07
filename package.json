@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/AgtLucas/bw/issues"
   },
-  "homepage": "https://github.com/AgtLucas/bw"
+  "homepage": "https://github.com/AgtLucas/bw",
+  "dependencies": {
+    "webpack": "^1.7.3"
+  }
 }

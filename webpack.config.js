@@ -17,5 +17,14 @@ module.exports = {
   output: {
     path: path.join(__dirname, 'build'),
     filename: 'backend.js'
-  }
+  },
+  externals: nodeModules,
+  plugins: [
+    new webpack.IgnorePlugin(/\.(css|sass)$/),
+    new webpack.BannerPlugin('require("source-map-support").install();', {
+      raw: true,
+      entryOnly: false
+    })
+  ],
+  devtool: 'sourcemap'
 };

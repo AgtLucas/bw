@@ -70,7 +70,7 @@ require("source-map-support").install();
 
 	var t = __webpack_require__(4);
 	
-	module.exports = function (req, rest) {
+	module.exports = function (req, res) {
 	  var arr = JSON.parse(req.query.arr || '[]');
 	  res.send(t.map(arr, function (x) { return x + 1; }));
 	};

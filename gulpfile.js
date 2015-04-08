@@ -5,13 +5,29 @@ var fs = require('fs');
 var DeepMerge = require('deep-merge');
 var nodemon = require('nodemon');
 
-var deepMerge = DeepMerge(function (target, source, key) {
+var deepmerge = DeepMerge(function (target, source, key) {
   if (target instanceOf Array) {
     return [].concat(target, source);
   }
   return source;
 });
 
+var defaultConfig = {
+  module: {
+    loaders: [
+      { test: /\.js$/, exclude: /node_modules/, loaders: ['babel'] },
+    ]
+  }
+};
+
+if (process.env.NODE_ENV !== 'production') {
+  defaultConfig.devtool = '#eval-source-map';
+  defaultConfig.debug = true;
+}
+
+function config(overrides) {
+  return deepmerge(defaultConfig, overrides || {});
+}
 
 var nodeModules = {};
 fs.readdirSync('node_modules')

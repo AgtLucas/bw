@@ -6,7 +6,7 @@ var DeepMerge = require('deep-merge');
 var nodemon = require('nodemon');
 
 var deepmerge = DeepMerge(function (target, source, key) {
-  if (target instanceOf Array) {
+  if (target instanceof Array) {
     return [].concat(target, source);
   }
   return source;

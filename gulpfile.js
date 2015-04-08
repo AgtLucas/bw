@@ -10,7 +10,7 @@ var deepMerge = DeepMerge(function (target, source, key) {
     return [].concat(target, source);
   }
   return source;
-})
+});
 
 
 var nodeModules = {};

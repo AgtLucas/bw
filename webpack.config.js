@@ -13,7 +13,26 @@ fs.readdirSync('node_modules')
   });
 
 var config = {
-
+  entry: './src/main.js',
+  target: 'node',
+  output: {
+    path: path.join(__dirname, 'build'),
+    filename: 'backend.js'
+  },
+  module: {
+    loaders: [
+      { test: /\.js$/, exclude: /node_modules/, loaders: ['babel'] },
+    ]
+  },
+  externals: nodeModules,
+  plugins: [
+    new webpack.IgnorePlugin(/\.(css|sass)$/),
+    new webpack.BannerPlugin('require("source-map-support").install();', {
+      raw: true,
+      entryOnly: false
+    })
+  ],
+  devtool: 'sourcemap'
 };
 
 gulp.task('build-backend', function (done) {

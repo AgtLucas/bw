@@ -12,6 +12,7 @@ var deepmerge = DeepMerge(function (target, source, key) {
   return source;
 });
 
+// Generic
 var defaultConfig = {
   module: {
     loaders: [
@@ -29,6 +30,16 @@ function config(overrides) {
   return deepmerge(defaultConfig, overrides || {});
 }
 
+// Front-End
+var frontendConfig = config({
+  entry: './static/js/main.js',
+  output: {
+    path: path.join(__dirname, 'static/build'),
+    filename: 'frontend.js'
+  }
+});
+
+// Back-End
 var nodeModules = {};
 fs.readdirSync('node_modules')
   .filter(function (x) {
@@ -38,17 +49,16 @@ fs.readdirSync('node_modules')
     nodeModules[mod] = 'commonjs ' + mod
   });
 
-var config = {
+var backendConfig = config({
   entry: './src/main.js',
   target: 'node',
   output: {
     path: path.join(__dirname, 'build'),
     filename: 'backend.js'
   },
-  module: {
-    loaders: [
-      { test: /\.js$/, exclude: /node_modules/, loaders: ['babel'] },
-    ]
+  node: {
+    __dirname: true,
+    __filename: true
   },
   externals: nodeModules,
   plugins: [
@@ -59,15 +69,55 @@ var config = {
     })
   ],
   devtool: 'sourcemap'
-};
+});
 
-gulp.task('build-backend', function (done) {
-  webpack(config).run(function (err, stats) {
+// Tasks
+function onBuild(done) {
+  return function (err, stats) {
     if (err) {
       console.log('Error', err);
     } else {
       console.log(stats.toString());
     }
-    done();
+
+    if (done) {
+      done();
+    }
+  }
+}
+
+gulp.task('frontend-build', function (done) {
+  webpack(frontendConfig).run(onBuild(done));
+});
+
+gulp.task('frontend-watch', function () {
+  webpack(frontendConfig).watch(100, onBuild());
+});
+
+gulp.task('backend-build', function (done) {
+  webpack(backendConfig).run(onBuild(done));
+});
+
+gulp.task('backend-watch', function () {
+  webpack(backendConfig).watch(100, function (err, stats) {
+    onBuild()(err, stats);
+    nodemon.restart();
+  });
+});
+
+gulp.task('build', ['frontend-build', 'backend-build']);
+gulp.task('watch', ['frontend-watch', 'backend-watch']);
+
+gulp.task('run', ['backend-watch', 'frontend-watch'], function () {
+  nodemon({
+    execMap: {
+      js: 'node'
+    },
+    script: path.join(__dirname, 'build/backend'),
+    ignore: ['*'],
+    watch: ['foo/'],
+    ext: 'noop'
+  }).on('restart', function () {
+    console.log('Restarted!');
   });
 });

@@ -12,24 +12,6 @@ fs.readdirSync('node_modules')
     nodeModules[mod] = 'commonjs ' + mod
   });
 
-module.exports = {
-  entry: './src/main.js',
-  target: 'node',
-  output: {
-    path: path.join(__dirname, 'build'),
-    filename: 'backend.js'
-  },
-  externals: nodeModules,
-  plugins: [
-    new webpack.IgnorePlugin(/\.(css|sass)$/),
-    new webpack.BannerPlugin('require("source-map-support").install();', {
-      raw: true,
-      entryOnly: false
-    })
-  ],
-  devtool: 'sourcemap'
-};
-
 var config = {
 
 };

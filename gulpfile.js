@@ -2,6 +2,16 @@ var gulp = require('gulp');
 var webpack = require('webpack');
 var path = require('path');
 var fs = require('fs');
+var DeepMerge = require('deep-merge');
+var nodemon = require('nodemon');
+
+var deepMerge = DeepMerge(function (target, source, key) {
+  if (target instanceOf Array) {
+    return [].concat(target, source);
+  }
+  return source;
+})
+
 
 var nodeModules = {};
 fs.readdirSync('node_modules')
